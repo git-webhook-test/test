@@ -25,6 +25,7 @@ DB.prototype = {
     },
     async get_one(name) {
         let t = await query('SELECT * FROM webhooks WHERE name=$1', [name])
+        return t[0]
     }
 }
 
