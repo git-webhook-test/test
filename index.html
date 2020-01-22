@@ -5,13 +5,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js"></script>
     <title>GitHook</title>
 </head>
 
 <body>
+    <div id="app">
+        <h3 style="text-align: center">GitHook</h3>
+        <el-form ref="form" :model="form" label-width="80px">
+            <el-form-item label="类别">
+                <el-radio-group v-model="form.type">
+                    <el-radio label="个人"></el-radio>
+                    <el-radio label="组织">
+                        </el-radiolabel="组织">
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item :label="form.type === '组织' ? '组织名' : '仓库名'">
+                <el-input v-model="form.name"
+                    :placeholder="form.type === '组织' ? 'eg. MixinNetwork' : 'eg. liuzemei/test'"></el-input>
+            </el-form-item>
+            <el-form-item label="gitToken">
+                <el-input v-model="form.token"></el-input>
+            </el-form-item>
+            <el-form-item label="webhookUrl">
+                <el-input type="textarea" v-model="form.url"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit">立即创建</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+    <script>
+        var instance = axios.create()
+        var app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    form: {
+                        type: '个人',
+                        name: '',
+                        token: '',
+                        url: ''
+                    }
+                }
+            },
+            methods: {
 
-    <label>git<input /></label>
-
+                async onSubmit() {
+                    let t = this.form.type === '个人' ? 'p' : 'o'
+                    let { name, token, url } = this.form
+                    if (!name || !token || !url) return this.$message.error('内容未完成')
+                    try {
+                        let {data} = await instance.get(`http://118.24.121.133:9089/uploadInfo?type=${t}&name=${name}&token=${token}&url=${url}`)
+                        console.log(data)
+                        this.$message.info(data)
+                    } catch (e) {
+                        console.log(e)
+                    }
+                }
+            },
+            mounted() {
+            }
+        });
+    </script>
 </body>
 
 </html>
