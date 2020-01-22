@@ -20,8 +20,8 @@ let DB = function () {
 }
 
 DB.prototype = {
-    async add_one({ type, name, token, url }) {
-        return await query('INSERT INTO webhooks(type, name, token, url)  VALUES($1::varchar, $2::varchar, $3::varchar, $4::varchar)', [type, name, token, url])
+    async add_one({ name, url }) {
+        return await query('INSERT INTO webhooks(name, url)  VALUES($1::varchar, $2::varchar)', [name, url])
     },
     async get_one(name) {
         let t = await query('SELECT * FROM webhooks WHERE name=$1', [name])

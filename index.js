@@ -5,12 +5,6 @@ const handler = createHandler({ path: '/webhook', secret })
 const axios = require('axios')
 const db = require('./db')
 const instance = axios.create()
-const git_ajax = axios.create({
-    baseURL: 'https://api.github.com',
-    headers: {
-        'Content-Type': 'application/json; charset=utf-8'
-    }
-});
 
 
 http.createServer(async function (req, res) {
@@ -20,43 +14,13 @@ http.createServer(async function (req, res) {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': 'Content-Type,XFILENAME,XFILECATEGORY,XFILESIZE'
         })
-        let type = getQueryString('type', req.url)
         let name = getQueryString('name', req.url)
-        let token = getQueryString('token', req.url)
         let url = getQueryString('url', req.url)
         try {
-            if (type === 'p') {
-                await git_ajax({
-                    headers: { Authorization: 'token ' + token },
-                    method: 'post',
-                    url: `/repos/${name}/hooks`,
-                    data: {
-                        config: {
-                            url: 'http://118.24.121.133:9089/webhook',
-                            content_type: 'json', secret
-                        }
-                    }
-                })
-                await db.add_one({ type, name, token, url })
-            } else {
-                await git_ajax({
-                    headers: { Authorization: 'token ' + token },
-                    method: 'post',
-                    url: `/orgs/${name}/hooks`,
-                    data: {
-                        name: 'web',
-                        config: {
-                            url: 'http://118.24.121.133:9089/webhook',
-                            content_type: 'json', secret
-                        }
-                    }
-                })
-                await db.add_one({ type, name, token, url })
-            }
+            await db.add_one({ name, url })
         } catch (e) {
             return res.end('fail')
         }
-
         res.statusCode = 200
         return res.end('ok')
     }

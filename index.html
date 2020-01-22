@@ -16,19 +16,8 @@
     <div id="app">
         <h3 style="text-align: center">GitHook</h3>
         <el-form ref="form" :model="form" label-width="80px">
-            <el-form-item label="类别">
-                <el-radio-group v-model="form.type">
-                    <el-radio label="个人"></el-radio>
-                    <el-radio label="组织">
-                        </el-radiolabel="组织">
-                </el-radio-group>
-            </el-form-item>
-            <el-form-item :label="form.type === '组织' ? '组织名' : '仓库名'">
-                <el-input v-model="form.name"
-                    :placeholder="form.type === '组织' ? 'eg. MixinNetwork' : 'eg. liuzemei/test'"></el-input>
-            </el-form-item>
-            <el-form-item label="gitToken">
-                <el-input v-model="form.token"></el-input>
+            <el-form-item label="项目全称">
+                <el-input v-model="form.name" placeholder="eg. liuzemei/test"></el-input>
             </el-form-item>
             <el-form-item label="webhookUrl">
                 <el-input type="textarea" v-model="form.url"></el-input>
@@ -37,6 +26,16 @@
                 <el-button type="primary" @click="onSubmit">立即创建</el-button>
             </el-form-item>
         </el-form>
+        <p>使用说明</p>
+        <p>1. 打开网站 https://github.com/ 所有者 / 仓库名 /settings/hooks </p>
+        <p>2. 点击 Add webhook</p>
+        <p>3. Payload URL 填写 【 http://118.24.121.133:9089/webhook 】<br />
+            Content type 选择 【 application/json 】<br />
+            Secret 填写【 1417856569 】<br />
+            点击 Add webhook </p>
+        <p>4. 添加机器人 【 7000000012 】到群内打开之后获取到 Url </p>
+        <p>5. 填写本页信息点击 【 立即创建 】</p>
+
     </div>
     <script>
         var instance = axios.create()
@@ -45,29 +44,18 @@
             data() {
                 return {
                     form: {
-                        type: '个人',
                         name: '',
-                        token: '',
                         url: ''
                     }
                 }
             },
             methods: {
-
                 async onSubmit() {
-                    let t = this.form.type === '个人' ? 'p' : 'o'
-                    let { name, token, url } = this.form
-                    if (!name || !token || !url) return this.$message.error('内容未完成')
-                    try {
-                        let {data} = await instance.get(`http://118.24.121.133:9089/uploadInfo?type=${t}&name=${name}&token=${token}&url=${url}`)
-                        console.log(data)
-                        this.$message.info(data)
-                    } catch (e) {
-                        console.log(e)
-                    }
+                    let { name, url } = this.form
+                    if (!name || !url) return this.$message.error('内容未完成')
+                    let { data } = await instance.get(`http://118.24.121.133:9089/uploadInfo?name=${name}&url=${url}`)
+                    this.$message.info(data)
                 }
-            },
-            mounted() {
             }
         });
     </script>
