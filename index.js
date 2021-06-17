@@ -5,7 +5,6 @@ const handler = createHandler({ path: '/webhook', secret })
 const axios = require('axios')
 const db = require('./db')
 const instance = axios.create()
-1
 
 http.createServer(async function (req, res) {
     if (req.url.includes('/uploadInfo')) {
