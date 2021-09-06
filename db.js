@@ -15,6 +15,7 @@ async function query(sql, params) {
     return rows
 }
 
+
 let DB = function () {
 
 }
