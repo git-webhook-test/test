@@ -31,5 +31,4 @@ DB.prototype = {
 }
 
 
-
 module.exports = new DB()
