@@ -15,6 +15,7 @@ async function query(sql, params) {
     return rows
 }
 
+
 let DB = function () {
 
 }
@@ -28,5 +29,6 @@ DB.prototype = {
         return t[0]
     }
 }
+
 
 module.exports = new DB()
